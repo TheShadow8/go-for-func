@@ -38,7 +38,7 @@ func (c *authController) SignUp(ctx *fiber.Ctx) error {
 
 	return ctx.
 		Status(http.StatusCreated).
-		JSON(user)
+		JSON(util.NewJResponse(nil, &user))
 
 }
 
@@ -53,5 +53,5 @@ func (c *authController) GetUser(ctx *fiber.Ctx) error {
 
 	return ctx.
 		Status(http.StatusOK).
-		JSON(user)
+		JSON(util.NewJResponse(nil, &user))
 }

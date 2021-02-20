@@ -2,16 +2,22 @@ package util
 
 import "strings"
 
-type JError struct {
-	Error string `json:"error"`
+type JResponse struct {
+	Error   string `json:"error,omitempty"`
+	Code    int    `json:"code,omitempty"`
+	Success bool   `json:"success"`
+
+	Body interface{} `json:"body,omitempty"`
 }
 
-func NewJError(err error) JError {
-	jerr := JError{"generic error"}
+func NewJResponse(err error, data interface{}) JResponse {
+	jres := JResponse{"", 0, true, data}
 	if err != nil {
-		jerr.Error = err.Error()
+		jres.Success = false
+		jres.Error = err.Error()
+		jres.Code = GetErrorCode(err)
 	}
-	return jerr
+	return jres
 }
 
 func NormalizeEmail(email string) string {

@@ -35,12 +35,12 @@ func main() {
 
 			// Retreive the custom statuscode if it's an *util.AppError
 			if e, ok := err.(*util.AppError); ok {
-				code = e.GetCode()
+				code = e.GetStatus()
 			}
 
 			if err != nil {
 
-				return ctx.Status(code).JSON(util.NewJError(err))
+				return ctx.Status(code).JSON(util.NewJResponse(err, nil))
 			}
 
 			// Return from handler
@@ -51,7 +51,7 @@ func main() {
 	app.Use(logger.New())
 
 	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello World !")
+		return c.SendString("Hello World !!!")
 	})
 
 	usersRepo := repository.NewUsersRepository(conn)

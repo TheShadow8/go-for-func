@@ -5,6 +5,7 @@ import (
 )
 
 const (
+	InvalidInput       = "invalid input"
 	InvalidEmail       = "invalid email"
 	EmailAlreadyExists = "email already exists"
 	EmptyPassword      = "password can't be empty"
@@ -14,6 +15,7 @@ const (
 )
 
 var (
+	ErrInvalidInput = errors.New(InvalidInput)
 	ErrInvalidEmail       = errors.New(InvalidEmail)
 	ErrEmailAlreadyExists = errors.New(EmailAlreadyExists)
 	ErrEmptyPassword      = errors.New(EmptyPassword)
@@ -23,12 +25,13 @@ var (
 )
 
 var errorCode = map[string]int{
-	InvalidEmail:       1,
-	EmailAlreadyExists: 2,
-	EmptyPassword:      2,
-	InvalidAuthToken:   4,
-	InvalidCredentials: 5,
-	Unauthorized:       6,
+	InvalidInput: 		1,
+	InvalidEmail:       2,
+	EmailAlreadyExists: 3,
+	EmptyPassword:      4,
+	InvalidAuthToken:   5,
+	InvalidCredentials: 6,
+	Unauthorized:       7,
 }
 
 // StatusText returns a text for the HTTP status code. It returns the empty

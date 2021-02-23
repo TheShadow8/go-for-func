@@ -17,7 +17,7 @@ type UsersRepository interface {
 	Save(user *models.User) (*mongo.InsertOneResult, error)
 	// Update(user *models.User) error
 	GetById(id string) (user *models.User, error error)
-	// GetByEmail(email string) (user *models.User, err error)
+	GetByEmail(email string) (user *models.User, err error)
 	// GetAll() (users []*models.User, err error)
 	// Delete(id string) error
 }
@@ -61,13 +61,26 @@ func (r *usersRepository) GetById(id string) (user *models.User, error error) {
 		return nil, err
 	}
 
-	return &userDecode, nil
+	return userDecode.SanitizeUser(), nil
 }
 
-// func (r *usersRepository) GetByEmail(email string) (user *models.User, err error) {
-// 	err = r.c.Find(bson.M{"email": email}).One(&user)
-// 	return user, err
-// }
+func (r *usersRepository) GetByEmail(email string) (user *models.User, err error) {
+	documentReturned := r.c.FindOne(context.TODO(), bson.M{"email": email})
+
+	userDecode := models.User{}
+
+	err = documentReturned.Decode(&userDecode)
+
+	if err != nil {
+
+		if err == mongo.ErrNoDocuments {
+			return nil, errors.New("Not Found")
+		}
+		return nil, err
+	}
+
+	return & userDecode, nil
+}
 
 // func (r *usersRepository) GetAll() (users []*models.User, err error) {
 // 	err = r.c.Find(bson.M{}).All(&users)

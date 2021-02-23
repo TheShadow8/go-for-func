@@ -14,6 +14,7 @@ import (
 
 type AuthServices interface {
 	SignUp(user *models.User) (*models.User, error)
+	GetByEmail(email string) (*models.User, error)
 	GetUser(userId string) (*models.User, error)
 }
 
@@ -56,9 +57,13 @@ func (s *authServices) SignUp(user *models.User) (*models.User, error) {
 		user.ID = oid
 	}
 
-	return user.SanitizeUser(), nil
+	return user, nil
 }
 
 func (s *authServices) GetUser(userId string) (*models.User, error) {
 	return s.usersRepo.GetById(userId)
+}
+
+func (s *authServices) GetByEmail(email string) (*models.User, error) {
+	return s.usersRepo.GetByEmail(email)
 }

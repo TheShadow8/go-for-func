@@ -15,9 +15,9 @@ const UsersCollection = "users"
 
 type UsersRepository interface {
 	Save(user *models.User) (*mongo.InsertOneResult, error)
-	// Update(user *models.User) error
 	GetById(id string) (user *models.User, error error)
 	GetByEmail(email string) (user *models.User, err error)
+	// Update(user *models.User) error
 	// GetAll() (users []*models.User, err error)
 	// Delete(id string) error
 }
@@ -79,7 +79,7 @@ func (r *usersRepository) GetByEmail(email string) (user *models.User, err error
 		return nil, err
 	}
 
-	return & userDecode, nil
+	return &userDecode, nil
 }
 
 // func (r *usersRepository) GetAll() (users []*models.User, err error) {

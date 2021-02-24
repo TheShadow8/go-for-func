@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"time"
 
@@ -59,8 +60,10 @@ func main() {
 		return c.SendString("Hello World !!!")
 	})
 
-	app.Static("/uploads", "./uploads")
+	filesRepo := repository.NewFilesRepository(conn)
+	// fileServices := services.NewFileService(filesRepo)
 
+	app.Static("/uploads", "./uploads")
 	app.Post("/uploads", func(ctx *fiber.Ctx) error {
 		form, err := ctx.MultipartForm()
 
@@ -74,8 +77,6 @@ func main() {
 
 		err = ctx.BodyParser(&f)
 
-		fmt.Print(f)
-
 		uploadPath := fmt.Sprintf("./uploads")
 
 		err = os.MkdirAll(uploadPath, os.ModePerm)
@@ -84,19 +85,37 @@ func main() {
 			return err
 		}
 
+		var filesData []*models.File
+
 		for _, file := range files {
 			fmt.Println(file.Filename, file.Size, file.Header["Content-Type"][0])
 
-			name := fmt.Sprintf("%d-%s", time.Now().Unix(), file.Filename)
+			var fileInfo models.File
 
-			err := ctx.SaveFile(file, fmt.Sprintf("%s/%s", uploadPath, name))
+			name := fmt.Sprintf("%d-%s", time.Now().Unix(), file.Filename)
+			path := fmt.Sprintf("%s/%s", uploadPath, name)
+
+			err := ctx.SaveFile(file, path)
 
 			if err != nil {
 				return err
 			}
 
+			fileInfo.Project = f.Project
+			fileInfo.FileName = name
+			fileInfo.FilePath = path[1:]
+
+			fmt.Println("fI", fileInfo)
+
+			filesData = append(filesData, &fileInfo)
+
 		}
-		return nil
+
+		fmt.Println("fd", filesData)
+
+		filesRepo.Save(filesData)
+
+		return ctx.Status(http.StatusOK).JSON(util.NewJResponse(nil, filesData))
 
 	})
 

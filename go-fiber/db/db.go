@@ -46,7 +46,6 @@ func (c *conn) Client() *mongo.Client {
 	return c.client
 }
 
-
 func (c *conn) DB() *mongo.Database {
 	return c.db
 }

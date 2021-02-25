@@ -12,26 +12,29 @@ const (
 	InvalidAuthToken   = "invalid auth-token"
 	InvalidCredentials = "invalid credentials"
 	Unauthorized       = "Unauthorized"
+	DataNotFound       = "DataNotFound"
 )
 
 var (
-	ErrInvalidInput = errors.New(InvalidInput)
+	ErrInvalidInput       = errors.New(InvalidInput)
 	ErrInvalidEmail       = errors.New(InvalidEmail)
 	ErrEmailAlreadyExists = errors.New(EmailAlreadyExists)
 	ErrEmptyPassword      = errors.New(EmptyPassword)
 	ErrInvalidAuthToken   = errors.New(InvalidAuthToken)
 	ErrInvalidCredentials = errors.New(InvalidCredentials)
 	ErrUnauthorized       = errors.New(Unauthorized)
+	ErrDataNotFound       = errors.New(DataNotFound)
 )
 
 var errorCode = map[string]int{
-	InvalidInput: 		1,
+	InvalidInput:       1,
 	InvalidEmail:       2,
 	EmailAlreadyExists: 3,
 	EmptyPassword:      4,
 	InvalidAuthToken:   5,
 	InvalidCredentials: 6,
 	Unauthorized:       7,
+	DataNotFound:       404,
 }
 
 // StatusText returns a text for the HTTP status code. It returns the empty

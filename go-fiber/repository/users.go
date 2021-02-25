@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"errors"
 
 	"gitlab.com/TheShadow8/go-test-fiber/db"
 	"gitlab.com/TheShadow8/go-test-fiber/models"
@@ -55,7 +54,7 @@ func (r *usersRepository) GetById(id string) (user *models.User, error error) {
 	if err != nil {
 
 		if err == mongo.ErrNoDocuments {
-			return nil, errors.New("Not Found")
+			return nil, nil
 		}
 
 		return nil, err
@@ -74,7 +73,7 @@ func (r *usersRepository) GetByEmail(email string) (user *models.User, err error
 	if err != nil {
 
 		if err == mongo.ErrNoDocuments {
-			return nil, errors.New("Not Found")
+			return nil, nil
 		}
 		return nil, err
 	}

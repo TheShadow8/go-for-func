@@ -3,11 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"net/http"
-	"os"
-	"time"
-
-	"gitlab.com/TheShadow8/go-test-fiber/models"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -54,77 +49,27 @@ func main() {
 		},
 	})
 
+	uploadPath := fmt.Sprintf("./uploads")
+
 	app.Use(logger.New())
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello World !!!")
 	})
 
+	app.Static("/uploads", uploadPath)
+
 	filesRepo := repository.NewFilesRepository(conn)
-	// fileServices := services.NewFileService(filesRepo)
-
-	app.Static("/uploads", "./uploads")
-	app.Post("/uploads", func(ctx *fiber.Ctx) error {
-		form, err := ctx.MultipartForm()
-
-		if err != nil {
-			return err
-		}
-
-		files := form.File["files"]
-
-		var f = models.File{}
-
-		err = ctx.BodyParser(&f)
-
-		uploadPath := fmt.Sprintf("./uploads")
-
-		err = os.MkdirAll(uploadPath, os.ModePerm)
-
-		if err != nil {
-			return err
-		}
-
-		var filesData []*models.File
-
-		for _, file := range files {
-			fmt.Println(file.Filename, file.Size, file.Header["Content-Type"][0])
-
-			var fileInfo models.File
-
-			name := fmt.Sprintf("%d-%s", time.Now().Unix(), file.Filename)
-			path := fmt.Sprintf("%s/%s", uploadPath, name)
-
-			err := ctx.SaveFile(file, path)
-
-			if err != nil {
-				return err
-			}
-
-			fileInfo.Project = f.Project
-			fileInfo.FileName = name
-			fileInfo.FilePath = path[1:]
-
-			fmt.Println("fI", fileInfo)
-
-			filesData = append(filesData, &fileInfo)
-
-		}
-
-		fmt.Println("fd", filesData)
-
-		filesRepo.Save(filesData)
-
-		return ctx.Status(http.StatusOK).JSON(util.NewJResponse(nil, filesData))
-
-	})
+	fileServices := services.NewFileService(filesRepo)
+	fileController := controllers.NewFileController(fileServices)
+	fileRoutes := routes.NewFileRoutes(fileController)
+	fileRoutes.Install(app)
 
 	usersRepo := repository.NewUsersRepository(conn)
 	authServices := services.NewAuthServices(usersRepo)
 	authController := controllers.NewAuthController(authServices)
 	authRoutes := routes.NewAuthRoutes(authController)
 	authRoutes.Install(app)
-	// fmt.Print(usersRepo)
 
 	log.Fatal(app.Listen(":3000"))
 }

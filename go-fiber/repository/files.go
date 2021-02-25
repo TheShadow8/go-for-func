@@ -28,9 +28,22 @@ func NewFilesRepository(conn db.Connection) FilesRepository {
 }
 
 func (r *filesRepository) Save(files []*models.File) (*mongo.InsertManyResult, error) {
-	fmt.Println("files", files)
-	r.c.InsertOne(context.TODO(), files[0])
-	return r.c.InsertMany(context.TODO(), []interface{}{files})
+	// fmt.Println("files", files)
+	// r.c.InsertOne(context.TODO(), files[0])
+
+	data := []interface{}{}
+
+	for i := range files {
+		f := files[i]
+
+		f.ID = primitive.NewObjectID()
+
+		fmt.Println("files i", i, f)
+
+		data = append(data, f)
+	}
+
+	return r.c.InsertMany(context.TODO(), data)
 
 }
 

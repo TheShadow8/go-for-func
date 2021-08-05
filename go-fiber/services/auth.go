@@ -19,6 +19,7 @@ type AuthServices interface {
 	SignIn(input *models.User) (user *models.User, token string, error error)
 	GetByEmail(email string) (*models.User, error)
 	GetUser(userId string) (*models.User, error)
+	GetUsers() ([]*models.User, error)
 }
 
 type authServices struct {
@@ -112,4 +113,8 @@ func (s *authServices) GetUser(userId string) (*models.User, error) {
 
 func (s *authServices) GetByEmail(email string) (*models.User, error) {
 	return s.usersRepo.GetByEmail(email)
+}
+
+func (s *authServices) GetUsers() ([]*models.User, error) {
+	return s.usersRepo.GetAll()
 }

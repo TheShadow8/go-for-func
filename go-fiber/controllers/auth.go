@@ -13,6 +13,7 @@ type AuthController interface {
 	SignUp(ctx *fiber.Ctx) error
 	SignIn(ctx *fiber.Ctx) error
 	GetUser(ctx *fiber.Ctx) error
+	GetUsers(ctx *fiber.Ctx) error
 }
 
 type authController struct {
@@ -82,4 +83,14 @@ func (c *authController) GetUser(ctx *fiber.Ctx) error {
 	return ctx.
 		Status(http.StatusOK).
 		JSON(util.NewJResponse(nil, &user))
+}
+
+func (c *authController) GetUsers(ctx *fiber.Ctx) error {
+	users, err := c.authServices.GetUsers()
+
+	if err != nil {
+		return util.NewAppError(err, http.StatusNotFound)
+	}
+
+	return ctx.Status(http.StatusOK).JSON(util.NewJResponse(nil, &users))
 }

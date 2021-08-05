@@ -17,7 +17,7 @@ type UsersRepository interface {
 	GetById(id string) (user *models.User, error error)
 	GetByEmail(email string) (user *models.User, err error)
 	// Update(user *models.User) error
-	// GetAll() (users []*models.User, err error)
+	GetAll() (users []*models.User, err error)
 	// Delete(id string) error
 }
 
@@ -79,6 +79,21 @@ func (r *usersRepository) GetByEmail(email string) (user *models.User, err error
 	}
 
 	return &userDecode, nil
+}
+
+func (r *usersRepository) GetAll() (users []*models.User, err error) {
+	cursor, err := r.c.Find(context.TODO(), bson.M{})
+
+	if err != nil {
+		return nil, err
+	}
+
+	if cursor.All(context.TODO(), &users); err != nil {
+		return nil, err
+	}
+
+	return users, nil
+
 }
 
 // func (r *usersRepository) GetAll() (users []*models.User, err error) {

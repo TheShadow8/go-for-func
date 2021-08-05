@@ -10,6 +10,7 @@ import (
 
 	"gitlab.com/TheShadow8/go-test-fiber/controllers"
 	"gitlab.com/TheShadow8/go-test-fiber/db"
+	"gitlab.com/TheShadow8/go-test-fiber/modules/posts"
 	"gitlab.com/TheShadow8/go-test-fiber/repository"
 	"gitlab.com/TheShadow8/go-test-fiber/routes"
 	"gitlab.com/TheShadow8/go-test-fiber/services"
@@ -70,6 +71,12 @@ func main() {
 	authController := controllers.NewAuthController(authServices)
 	authRoutes := routes.NewAuthRoutes(authController)
 	authRoutes.Install(app)
+
+	postsRepo := posts.NewPostRepository(conn)
+	postServices := posts.NewPostSevice(postsRepo)
+	postController := posts.NewPostController(postServices)
+	postRoutes := posts.NewPostRoutes(postController)
+	postRoutes.Install(app)
 
 	log.Fatal(app.Listen(":3000"))
 }

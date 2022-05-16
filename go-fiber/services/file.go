@@ -8,19 +8,19 @@ import (
 )
 
 type FileServices interface {
-	Save(files []*models.File) (*mongo.InsertManyResult, error)
+	Save(files *models.File) (*mongo.InsertOneResult, error)
 	GetById(fileId string) (*models.File, error)
 }
 
 type fileServices struct {
-	filesRepo repository.FilesRepository
+	filesRepo repository.AbcRepository[models.File]
 }
 
-func NewFileService(filesRepo repository.FilesRepository) FileServices {
+func NewFileService(filesRepo repository.AbcRepository[models.File]) FileServices {
 	return &fileServices{filesRepo}
 }
 
-func (s *fileServices) Save(files []*models.File) (*mongo.InsertManyResult, error) {
+func (s *fileServices) Save(files *models.File) (*mongo.InsertOneResult, error) {
 
 	insertedResults, err := s.filesRepo.Save(files)
 

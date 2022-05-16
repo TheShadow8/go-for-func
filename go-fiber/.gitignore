@@ -1,3 +1,4 @@
 .env
 uploads
 .idea/
+.DS_Store

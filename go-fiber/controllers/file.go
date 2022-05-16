@@ -72,7 +72,7 @@ func (c *fileController) Uploads(ctx *fiber.Ctx) error {
 
 	}
 
-	_, err = c.fileServices.Save(filesData)
+	_, err = c.fileServices.Save(filesData[0])
 
 	if err != nil {
 		return err

@@ -23,7 +23,7 @@ type AuthServices interface {
 }
 
 type authServices struct {
-	usersRepo repository.UsersRepository
+	usersRepo repository.AbcRepository[models.User]
 }
 
 func NewAuthServices(usersRepo repository.UsersRepository) AuthServices {

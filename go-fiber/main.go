@@ -10,6 +10,7 @@ import (
 
 	"gitlab.com/TheShadow8/go-test-fiber/controllers"
 	"gitlab.com/TheShadow8/go-test-fiber/db"
+	"gitlab.com/TheShadow8/go-test-fiber/models"
 	"gitlab.com/TheShadow8/go-test-fiber/modules/posts"
 	"gitlab.com/TheShadow8/go-test-fiber/repository"
 	"gitlab.com/TheShadow8/go-test-fiber/routes"
@@ -60,13 +61,13 @@ func main() {
 
 	app.Static("/uploads", uploadPath)
 
-	filesRepo := repository.NewFilesRepository(conn)
+	filesRepo := repository.NewAbcRepository[models.File](conn,"files")
 	fileServices := services.NewFileService(filesRepo)
 	fileController := controllers.NewFileController(fileServices)
 	fileRoutes := routes.NewFileRoutes(fileController)
 	fileRoutes.Install(app)
 
-	usersRepo := repository.NewUsersRepository(conn)
+	usersRepo := repository.NewAbcRepository[models.User](conn,"users")
 	authServices := services.NewAuthServices(usersRepo)
 	authController := controllers.NewAuthController(authServices)
 	authRoutes := routes.NewAuthRoutes(authController)
